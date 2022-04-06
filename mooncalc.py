@@ -7,8 +7,8 @@ Cf. http://en.wikipedia.org/wiki/Lunar_phase#Lunar_phase_calculation
 import math, decimal, datetime
 dec = decimal.Decimal
 
-def position(now=None): 
-   if now is None: 
+def position(now=None):
+   if now is None:
       now = datetime.datetime.now()
 
    diff = now - datetime.datetime(2001, 1, 1)
@@ -17,26 +17,26 @@ def position(now=None):
 
    return lunations % dec(1)
 
-def phase(pos): 
+def phase(pos):
    index = (pos * dec(8)) + dec("0.5")
    index = math.floor(index)
    return {
-      0: "New Moon", 
-      1: "Waxing Crescent", 
-      2: "First Quarter", 
-      3: "Waxing Gibbous", 
-      4: "Full Moon", 
-      5: "Waning Gibbous", 
-      6: "Last Quarter", 
-      7: "Waning Crescent"
+      0: "000",
+      1: "001",
+      2: "010",
+      3: "011",
+      4: "100",
+      5: "101",
+      6: "110",
+      7: "111",
    }[int(index) & 7]
 
-def main(): 
+def main():
    pos = position()
    phasename = phase(pos)
 
    roundedpos = round(float(pos), 3)
-   print(phasename, roundedpos)
+   print(phasename)
 
-if __name__=="__main__": 
+if __name__=="__main__":
    main()
