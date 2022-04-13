@@ -8,9 +8,9 @@ wanGib =[[0, 0, 0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 
 lastQ = [[0, 0, 0, 0, 0, 0, 1, 1], [0, 0, 0, 1, 1, 1, 1, 0], [0, 0, 0, 1, 1, 1, 1, 0], [1, 1, 1, 1, 0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 0, 0], [0, 0, 1, 1, 1, 1, 0, 0], [0, 0, 0, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 0, 1, 1]]
 wanCres = [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 1, 1, 0], [0, 0, 1, 1, 1, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0, 0, 0], [0, 0, 0, 0, 1, 1, 0, 0], [0, 0, 0, 0, 0, 1, 1, 0], [0, 0, 0, 0, 0, 0, 0, 1]]
 
+currentPhase = input()
 
 # function that takes input and prints the correct 2D array:
-
 def phasePrint(phase):
   if phase == 0 :
     print(newMoon)
@@ -28,3 +28,5 @@ def phasePrint(phase):
     print(lastQ)
   if phase == 7 :
     print(wanCres)  
+
+phasePrint(currentPhase)
