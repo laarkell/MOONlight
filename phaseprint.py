@@ -1,4 +1,4 @@
-# phases in 2D arrays, 8x8
+# phases in 2D arrays
 newMoon = [[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]
 waxCres = [[1, 0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 1, 1, 0, 0], [0, 0, 0, 0, 1, 1, 1, 1], [0, 0, 0, 1, 1, 1, 0, 0], [0, 0, 1, 1, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0]]
 firstQ = [[1, 1, 0, 0, 0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 0, 0], [0, 0, 0, 1, 1, 1, 1, 0], [0, 0, 0, 0, 1, 1, 1, 1], [0, 0, 0, 1, 1, 1, 1, 0], [0, 0, 1, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 0, 0, 0], [1, 1, 0, 0, 0, 0, 0, 0]]
@@ -8,7 +8,7 @@ wanGib =[[0, 0, 0, 0, 0, 1, 1, 1], [0, 0, 0, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 
 lastQ = [[0, 0, 0, 0, 0, 0, 1, 1], [0, 0, 0, 1, 1, 1, 1, 0], [0, 0, 0, 1, 1, 1, 1, 0], [1, 1, 1, 1, 0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 0, 0], [0, 0, 1, 1, 1, 1, 0, 0], [0, 0, 0, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 0, 1, 1]]
 wanCres = [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 1, 1, 0], [0, 0, 1, 1, 1, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0], [0, 0, 1, 1, 1, 0, 0, 0], [0, 0, 0, 0, 1, 1, 0, 0], [0, 0, 0, 0, 0, 1, 1, 0], [0, 0, 0, 0, 0, 0, 0, 1]]
 
-currentPhase = input("Enter Phase number:")
+currentPhase = input("Enter current moon phase (number from 0 to 7):")
 
 # function that takes input and prints the correct 2D array:
 def phasePrint(phase):
@@ -17,16 +17,16 @@ def phasePrint(phase):
   if phase == 1 :
     print(waxCres)
   if phase == 2 :
-    print(firstQ)  
+    print(firstQ)
   if phase == 3 :
-    print(waxGib)    
+    print(waxGib)
   if phase == 4 :
-    print(fullMoon)    
+    print(fullMoon)
   if phase == 5 :
-    print(wanGib) 
+    print(wanGib)
   if phase == 6 :
     print(lastQ)
   if phase == 7 :
-    print(wanCres)  
+    print(wanCres)
 
-phasePrint(currentPhase)
+phasePrint(int(currentPhase))
