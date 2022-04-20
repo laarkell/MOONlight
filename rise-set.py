@@ -249,4 +249,4 @@ def getMoonPosition(date, lat, lng):
         parallacticAngle=pa
     )
   
-  print(getMoonTimes(datetime.now(), 35.499, -80.848))
+print(getMoonTimes(datetime.now(), 35.499, -80.848))
