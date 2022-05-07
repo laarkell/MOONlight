@@ -30,6 +30,7 @@ def phase(pos):
 
 pos = position()
 phasename = phase(pos)
+print(phasename)
 
 #define PINs according to cabling
 columnDataPin = 20
