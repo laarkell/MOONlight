@@ -27,14 +27,8 @@ def phase(pos):
       7: "wanCres",
    }[int(index) & 7]
 
-def main():
-   pos = position()
-   phasename = phase(pos)
-
-   roundedpos = round(float(pos), 3)
-
-if __name__=="__main__":
-   main()
+pos = position()
+phasename = phase(pos)
     
 import RPi.GPIO as GPIO
 import sys
