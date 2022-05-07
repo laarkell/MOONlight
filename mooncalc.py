@@ -21,14 +21,14 @@ def phase(pos):
    index = (pos * dec(8)) + dec("0.5")
    index = math.floor(index)
    return {
-      0: "000",
-      1: "001",
-      2: "010",
-      3: "011",
-      4: "100",
-      5: "101",
-      6: "110",
-      7: "111",
+      0: "newMoon",
+      1: "waxCres",
+      2: "firstQ",
+      3: "waxGib",
+      4: "fullMoon",
+      5: "wanGib",
+      6: "lastQ",
+      7: "wanCres",
    }[int(index) & 7]
 
 def main():
