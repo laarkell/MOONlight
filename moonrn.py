@@ -188,6 +188,10 @@ def getMoonPosition(date, lat, lng):
         parallacticAngle=pa
     )
 
+moontimes = getMoonTimes(datetime.now(), 35.499, -80.848)
+moonrise1 = moontimes[0]
+moonset1 = moontimes[1]
+  
 # RASPBERRY PI STUFF
 
 #define PINs according to cabling
@@ -361,7 +365,7 @@ wanCres  = [["1111110000111111"],
 
 #MAIN PROGRAM
 
-if moonrise >= time and moonset <= time:
+if moonrise1 >= time and moonset1 <= time:
    while True:
      try:
        RowSelect=[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
