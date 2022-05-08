@@ -367,6 +367,6 @@ if moonrise1 > rntime and moonset1 < rntime:
          RowSelect = RowSelect[-1:] + RowSelect[:-1]
 
 #PINs final cleaning on interrupt
-  except KeyboardInterrupt:
-    GPIO.cleanup()
-    sys.exit()
+   except KeyboardInterrupt:
+     GPIO.cleanup()
+     sys.exit()
