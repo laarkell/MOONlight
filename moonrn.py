@@ -21,16 +21,7 @@ J2000 = 2451545
 J0 = 0.0009
 
 # CURRENT TIME
-
-# Create datetime string
-datetime_str = "24AUG2001101010"
-
-# call datetime.strptime to convert
-# it into datetime datatype
-datetime_obj = datetime.strptime(datetime_str,
-                                 "%d%b%Y%H%M%S")
-# extract the time from datetime_obj
-time = datetime_obj.time()
+rntime = datetime.now()
 
 # PHASE CACLUALATION
 dec = decimal.Decimal
@@ -365,7 +356,7 @@ wanCres  = [["1111110000111111"],
 
 #MAIN PROGRAM
 
-if moonrise1 >= time and moonset1 <= time:
+if moonrise1 > rntime and moonset1 < rntime:
    while True:
      try:
        RowSelect=[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
