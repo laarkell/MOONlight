@@ -1,7 +1,38 @@
 import math, decimal, datetime
 import RPi.GPIO as GPIO
 import sys
+from datetime import datetime, timedelta
+import time
+import calendar
 
+PI   = 3.141592653589793 # math.pi
+sin  = math.sin
+cos  = math.cos
+tan  = math.tan
+asin = math.asin
+atan = math.atan2
+acos = math.acos
+rad  = PI / 180.0
+e    = rad * 23.4397 # obliquity of the Earth
+
+dayMs = 1000 * 60 * 60 * 24
+J1970 = 2440588
+J2000 = 2451545
+J0 = 0.0009
+
+# CURRENT TIME
+
+# Create datetime string
+datetime_str = "24AUG2001101010"
+
+# call datetime.strptime to convert
+# it into datetime datatype
+datetime_obj = datetime.strptime(datetime_str,
+                                 "%d%b%Y%H%M%S")
+# extract the time from datetime_obj
+time = datetime_obj.time()
+
+# PHASE CACLUALATION
 dec = decimal.Decimal
 
 def position(now=None):
@@ -31,6 +62,133 @@ def phase(pos):
 pos = position()
 phasename = phase(pos)
 print(phasename)
+
+# RISE AND SET CALCULATIONS
+
+def altitude(H, phi, dec):
+    return asin(sin(phi) * sin(dec) + cos(phi) * cos(dec) * cos(H))
+
+def siderealTime(d, lw):
+     return rad * (280.16 + 360.9856235 * d) - lw
+
+def toDays(date):
+    return toJulian(date) - J2000
+
+def declination(l, b):
+    return asin(sin(b) * cos(e) + cos(b) * sin(e) * sin(l))
+
+def rightAscension(l, b):
+    return atan(sin(l) * cos(e) - tan(b) * sin(e), cos(l))
+
+def azimuth(H, phi, dec):
+    return atan(sin(H), cos(H) * sin(phi) - tan(dec) * cos(phi))
+
+def toJulian(date):
+    return (time.mktime(date.timetuple()) * 1000) / dayMs - 0.5 + J1970
+
+# geocentric ecliptic coordinates of the moon
+def moonCoords(d):
+    L = rad * (218.316 + 13.176396 * d)
+    M = rad * (134.963 + 13.064993 * d)
+    F = rad * (93.272 + 13.229350 * d)
+
+    l  = L + rad * 6.289 * sin(M)
+    b  = rad * 5.128 * sin(F)
+    dt = 385001 - 20905 * cos(M)
+
+    return dict(
+        ra=rightAscension(l, b),
+        dec=declination(l, b),
+        dist=dt
+    )
+
+def hoursLater(date, h):
+    return date + timedelta(hours=h)
+
+def getMoonTimes(date, lat, lng):
+    """Gets moon rise/set properties for the given time and location."""
+
+    t = date.replace(hour=0,minute=0,second=0)
+
+    hc = 0.133 * rad
+    h0 = getMoonPosition(t, lat, lng)["altitude"] - hc
+    rise = 0
+    sett = 0
+
+    # go in 2-hour chunks, each time seeing if a 3-point quadratic curve crosses zero (which means rise or set)
+    for i in range(1,25,2):
+        h1 = getMoonPosition(hoursLater(t, i), lat, lng)["altitude"] - hc
+        h2 = getMoonPosition(hoursLater(t, i + 1), lat, lng)["altitude"] - hc
+
+        a = (h0 + h2) / 2 - h1
+        b = (h2 - h0) / 2
+        xe = -b / (2 * a)
+        ye = (a * xe + b) * xe + h1
+        d = b * b - 4 * a * h1
+        roots = 0
+
+        if d >= 0:
+            dx = math.sqrt(d) / (abs(a) * 2)
+            x1 = xe - dx
+            x2 = xe + dx
+            if abs(x1) <= 1:
+                roots += 1
+            if abs(x2) <= 1:
+                roots += 1
+            if x1 < -1:
+                x1 = x2
+
+        if roots == 1:
+            if h0 < 0:
+                rise = i + x1
+            else:
+                sett = i + x1
+
+        elif roots == 2:
+            rise = i + (x2 if ye < 0 else x1)
+            sett = i + (x1 if ye < 0 else x2)
+
+        if (rise and sett):
+            break
+
+        h0 = h2
+
+    result = dict()
+
+    if (rise):
+        result["rise"] = hoursLater(t, rise)
+    if (sett):
+        result["set"] = hoursLater(t, sett)
+
+    if (not rise and not sett):
+        value = 'alwaysUp' if ye > 0 else 'alwaysDown'
+        result[value] = True
+
+    return result
+
+def getMoonPosition(date, lat, lng):
+    """Gets positional attributes of the moon for the given time and location."""
+
+    lw  = rad * -lng
+    phi = rad * lat
+    d   = toDays(date)
+
+    c = moonCoords(d)
+    H = siderealTime(d, lw) - c["ra"]
+    h = altitude(H, phi, c["dec"])
+
+    # altitude correction for refraction
+    h = h + rad * 0.017 / tan(h + rad * 10.26 / (h + rad * 5.10))
+    pa = atan(sin(H), tan(phi) * cos(c["dec"]) - sin(c["dec"]) * cos(H))
+
+    return dict(
+        azimuth=azimuth(H, phi, c["dec"]),
+        altitude=h,
+        distance=c["dist"],
+        parallacticAngle=pa
+    )
+
+# RASPBERRY PI STUFF
 
 #define PINs according to cabling
 columnDataPin = 20
@@ -62,7 +220,7 @@ def shift_update_matrix(input_Col,Column_PIN,input_Row,Row_PIN,clock,latch):
   GPIO.output(latch,1)
   GPIO.output(clock,1)
 
-#map your output into 1 (LED off) and 0 (led on) sequences
+# PHASE MATRICES
 
 fullMoon = [["1111110000111111"],
             ["1111000000001111"],
@@ -201,16 +359,18 @@ wanCres  = [["1111110000111111"],
             ["1111110000111111"]]
 
 
-#main program, calling shift register function to activate 16x16 LED Matrix
-while True:
-  try:
-    RowSelect=[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    for i in range(0,16): # last value in rage is not included by default
-      # send row data and row selection to registers
-      shift_update_matrix(''.join(map(str, phasename[i])),columnDataPin,\
-                          ''.join(map(str, RowSelect)),rowDataPin,clockPIN,latchPIN)
-      #shift row selector
-      RowSelect = RowSelect[-1:] + RowSelect[:-1]
+#MAIN PROGRAM
+
+if moonrise >= time and moonset <= time:
+   while True:
+     try:
+       RowSelect=[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+       for i in range(0,16): # last value in rage is not included by default
+         # send row data and row selection to registers
+         shift_update_matrix(''.join(map(str, phasename[i])),columnDataPin,\
+                             ''.join(map(str, RowSelect)),rowDataPin,clockPIN,latchPIN)
+         #shift row selector
+         RowSelect = RowSelect[-1:] + RowSelect[:-1]
 
 #PINs final cleaning on interrupt
   except KeyboardInterrupt:
