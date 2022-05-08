@@ -35,22 +35,22 @@ def shift_update_matrix(input_Col,Column_PIN,input_Row,Row_PIN,clock,latch):
 
 #map your output into 1 (LED off) and 0 (led on) sequences
 
-waxCres =  [["1111111000111111"],
-            ["1111111110001111"],
-            ["1111111111000111"],
-            ["1111111111100011"],
-            ["1111111111100001"],
-            ["1111111111100001"],
-            ["1111111111111000"],
-            ["1111111111111000"],
-            ["1111111111111000"],
-            ["1111111111111000"],
-            ["1111111111100001"],
-            ["1111111111100001"],
-            ["1111111111100011"],
-            ["1111111111000111"],
-            ["1111111110001111"],
-            ["1111111000111111"]]
+lastQ    = [["1111110011111111"],
+            ["1111000011111111"],
+            ["1110000011111111"],
+            ["1100000011111111"],
+            ["1000000011111111"],
+            ["1000000011111111"],
+            ["0000000011111111"],
+            ["0000000111111111"],
+            ["0000000111111111"],
+            ["0000000011111111"],
+            ["1000000011111111"],
+            ["1000000011111111"],
+            ["1100000011111111"],
+            ["1110000011111111"],
+            ["1111000011111111"],
+            ["1111110011111111"]]
 
 #main program, calling shift register function to activate 16x16 LED Matrix
 while True:
@@ -58,7 +58,7 @@ while True:
     RowSelect=[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     for i in range(0,16): # last value in rage is not included by default
       # send row data and row selection to registers
-      shift_update_matrix(''.join(map(str, waxCres[i])),columnDataPin,\
+      shift_update_matrix(''.join(map(str, lastQ[i])),columnDataPin,\
                           ''.join(map(str, RowSelect)),rowDataPin,clockPIN,latchPIN)
       #shift row selector
       RowSelect = RowSelect[-1:] + RowSelect[:-1]
