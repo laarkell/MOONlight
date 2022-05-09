@@ -179,10 +179,12 @@ def getMoonPosition(date, lat, lng):
         parallacticAngle=pa
     )
 
+   # these variables will be used to determine if the moon should light up!
 moontimes = getMoonTimes(datetime.now(), 35.499, -80.848)
 moonrise1 = list(moontimes.values())[0]
 moonset1 = list(moontimes.values())[1]
 
+# is the moon sets earlier in the day, the code wont function properly, so this resolves that issue byt setting the set equal tothe current time.
 if moonset1 < moonrise1:
    moonset1 = rntime
    
@@ -368,7 +370,7 @@ if moonrise1 < rntime and moonset1 >= rntime:
        RowSelect=[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
        for i in range(0,16): # last value in rage is not included by default
          # send row data and row selection to registers
-         shift_update_matrix(''.join(map(str, phasename[i])),columnDataPin,\
+         shift_update_matrix(''.join(map(str, wanGib[i])),columnDataPin,\
                              ''.join(map(str, RowSelect)),rowDataPin,clockPIN,latchPIN)
          #shift row selector
          RowSelect = RowSelect[-1:] + RowSelect[:-1]
