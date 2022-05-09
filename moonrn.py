@@ -356,7 +356,7 @@ wanCres  = [["1111110000111111"],
 
 #MAIN PROGRAM
 
-if moonrise1 > rntime and moonset1 < rntime:
+if moonrise1 < rntime and moonset1 > rntime:
    while True:
      try:
        RowSelect=[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
