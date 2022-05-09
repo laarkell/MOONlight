@@ -181,7 +181,14 @@ def getMoonPosition(date, lat, lng):
 
 moontimes = getMoonTimes(datetime.now(), 35.499, -80.848)
 moonrise1 = list(moontimes.values())[0]
-moonset1 = list(moontimes.values())[0]
+moonset1 = list(moontimes.values())[1]
+
+if moonset1 < moonrise1:
+   moonset1 = rntime
+   break
+   
+print("rntime:",rntime,"moonrise:", moonrise1,"moonset:", moonset1)
+
 
 # RASPBERRY PI STUFF
 
@@ -356,7 +363,7 @@ wanCres  = [["1111110000111111"],
 
 #MAIN PROGRAM
 
-if moonrise1 < rntime and moonset1 > rntime:
+if moonrise1 < rntime and moonset1 >= rntime:
    while True:
      try:
        RowSelect=[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
