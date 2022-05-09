@@ -185,7 +185,6 @@ moonset1 = list(moontimes.values())[1]
 
 if moonset1 < moonrise1:
    moonset1 = rntime
-   break
    
 print("rntime:",rntime,"moonrise:", moonrise1,"moonset:", moonset1)
 
